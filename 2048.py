@@ -29,7 +29,7 @@ def randMove():
         randCol = random.randint(0,3)
         return randRow, randCol
     print("The random row and col:", randRow, randCol)
-    return randRow, randCol
+    return [randRow, randCol]
 
 # After every move and start of the game
 #   - fill random cell with a 2 or a 4
@@ -79,7 +79,21 @@ def moveLeft(board):
 
 def moveRight(board):
     print("Move right was called")
-
+    for i in range(LEN):
+        #Goal : [_ 2 _ _] to move 2 to the right
+        for j in range(LEN-1):
+            # No need to care ab moves; get board[i] and scan for anything that isnt _
+            if board[i][j] != '_' and board[i][j+1] != '_':
+                if board[i][j] == board[i][j+1]:
+                    board[i][3] = str(int(board[i][j])+ int(board[i][j+1]))
+                    board[i][j] = '_'
+                    board[i][j+1] = '_'
+            #if the current isn't empty and not equal to next and next is empty
+            if board[i][j] != '_' and board[i][j] != board[i][j+1] and board[i][j+1] == '_':
+                board[i][j+1] = board[i][j]
+                board[i][j] = '_'
+            
+    printBoard(board)
     # After every move 
     #   - fill random cell with a 2 or a 4
 
