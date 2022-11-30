@@ -46,10 +46,39 @@ def populate(board, start):
 
     printBoard(board)
     print (RM)
- 
+    
+def userMove(board):
+    validMoves = ['i','I','K','k','J','j','L','l']
+    print("Make your move: \n\ti = up \n\tk = down \n\tj = left \n\tl = right \n\tq = quit")
+    userInput = input("")
+    while userInput not in validMoves and userInput != 'q' and userInput != 'Q':
+        userInput = input("Please enter a valid move (i,k,j,l,q)\n")
+
+    if(userInput == 'i' or userInput == 'I'):
+        moveUp(board)
+
+    elif(userInput == 'k' or userInput == 'K'):
+       moveDown(board)
+
+    elif(userInput == 'j' or userInput == 'J'):
+        moveLeft(board)
+
+    elif(userInput == 'l' or userInput == 'L'):
+        moveRight(board)
     # Moves
     #   - up, down, right and left
     #   - all elements in the board will move to the furthest direction
+def moveUp(board):
+    print("Move up was called")
+
+def moveDown(board):
+    print("Move down was called")
+
+def moveLeft(board):
+    print("Move Left was called")
+
+def moveRight(board):
+    print("Move right was called")
 
     # After every move 
     #   - fill random cell with a 2 or a 4
@@ -67,4 +96,5 @@ def main():
     printBoard(board)
     populate(board, start)
     start = False 
+    userMove(board)
 main()
