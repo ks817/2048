@@ -5,6 +5,7 @@ import random
 
 LEN = 4
 RM = [] #Stores random moves (r,c)
+PM = [] #Stores row and col of present element
 
 # Design: 
     # Initialize the board
@@ -56,53 +57,104 @@ def userMove(board):
 
     if(userInput == 'i' or userInput == 'I'):
         moveUp(board)
-
+        
     elif(userInput == 'k' or userInput == 'K'):
-       moveDown(board)
+        moveDown(board)
 
     elif(userInput == 'j' or userInput == 'J'):
         moveLeft(board)
 
     elif(userInput == 'l' or userInput == 'L'):
         moveRight(board)
+
+    return userInput
     # Moves
     #   - up, down, right and left
     #   - all elements in the board will move to the furthest direction
 def moveUp(board):
     print("Move up was called")
+    for i in range(LEN-1,0,-1):
+        #Goal : Move element all the way up in it's column
+        for j in range(LEN):
+            #get board[i] and scan for anything that isnt _
+            #if curr isn't empty and prev isn't empty
+            if board[i][j] != '_' and board[i-1][j] != '_':
+                #if curr and prev are equal the far left contains the sum
+                if board[i][j] == board[i-1][j]:
+                    board[3][j] = str(int(board[i][j])+ int(board[i-1][j]))
+                    ##print("Board[i][0]", 3, j," is updated to: ", board[3][j])
+                    board[i][j] = '_'
+                    ##print(i,j ,"is empty now")
+                    #make sure prev isn't 3rd row;
+                    if(i-1 != 3):
+                        board[i+1][j] = '_'
+                        ##print(i+1,j, "Next is empty ")
+    
+            #if the current isn't empty and not equal to next and next is empty
+            elif board[i][j] != '_' and board[i][j] != board[i-1][j] and board[i-1][j] == '_':
+                board[i-1][j] = board[i][j]
+                board[i][j] = '_'
+                ##print("Board[i+1][j]", i-1,j, " is updated to: ", board[i-1][j])
+                #printBoard(board)
+    populate(board,False)
 
 def moveDown(board):
     print("Move down was called")
+    #Start from 0,0 and move down each row
+    for i in range(LEN-1):
+        #Goal : Move element all the way down in it's column
+        for j in range(LEN):
+            #get board[i] and scan for anything that isnt _
+            #if curr isn't empty and next isn't empty
+            if board[i][j] != '_' and board[i+1][j] != '_':
+                #if curr and next are equal the far down contains the sum
+                if board[i][j] == board[i+1][j]:
+                    board[3][j] = str(int(board[i][j])+ int(board[i+1][j]))
+                    ##print("Board[i][0]", 3, j," is updated to: ", board[3][j])
+                    board[i][j] = '_'
+                    ##print(i,j ,"is empty now")
+                    #make sure prev isn't 3rd row;
+                    if(i+1 != 3):
+                        board[i+1][j] = '_'
+                        ##print(i+1,j, "Next is empty ")
+    
+            #if the current isn't empty and not equal to next and next is empty
+            elif board[i][j] != '_' and board[i][j] != board[i+1][j] and board[i+1][j] == '_':
+                board[i+1][j] = board[i][j]
+                board[i][j] = '_'
+                ##print("Board[i+1][j]", i+1,j, " is updated to: ", board[i+1][j])
+                #printBoard(board)
+            
+    populate(board,False)
 
 def moveLeft(board):
     print("Move Left was called")
+    #Start from 0,3 and keep moving to the left col
+    #Goal : [_ _ 2 _] to move 2 to the left
     for i in range(LEN):
-        #Goal : [_ _ 2 _] to move 2 to the left
         for j in range(LEN-1,0,-1):
-            #print(i,j)
+
             #get board[i] and scan for anything that isnt _
             #if curr isn't empty and prev isn't empty
             if board[i][j] != '_' and board[i][j-1] != '_':
                 #if curr and prev are equal the far left contains the sum
                 if board[i][j] == board[i][j-1]:
                     board[i][0] = str(int(board[i][j])+ int(board[i][j-1]))
-                    print("Board[i][0]", i, 0," is updated to: ", board[i][0])
+                    ##print("Board[i][0]", i, 0," is updated to: ", board[i][0])
                     board[i][j] = '_'
-                    print(i,j ,"is empty now")
-                    ###Adding the next statement is emptying the pos insted of adding
-                    #make sure prev isn't far left
+                    ##print(i,j ,"is empty now")
+                    #make sure prev isn't far left; o/w far left would be _ instead of sum
                     if(j-1 != 0):
                         board[i][j-1] = '_'
                         print(i,j-1, "Next is empty ")
     
-            #if the current isn't empty and not equal to next and next is empty
+            #if the current isn't empty and not equal to prev and prev is empty
             elif board[i][j] != '_' and board[i][j] != board[i][j-1] and board[i][j-1] == '_':
                 board[i][j-1] = board[i][j]
                 board[i][j] = '_'
-                print("Board[i][j-1]", i,j-1, " is updated to: ", board[i][j-1])
-                #printBoard(board)
+                ##print("Board[i][j-1]", i,j-1, " is updated to: ", board[i][j-1])
             
-    printBoard(board)
+    populate(board,False)
 
 
 def moveRight(board):
@@ -115,21 +167,29 @@ def moveRight(board):
                 if board[i][j] == board[i][j+1]:
                     board[i][3] = str(int(board[i][j])+ int(board[i][j+1]))
                     board[i][j] = '_'
-                    board[i][j+1] = '_'
+                    if(j+1 != 3):
+                        board[i][j+1] = '_'
+
+                        ##print(i,j+1, "Next is empty ")
             #if the current isn't empty and not equal to next and next is empty
             if board[i][j] != '_' and board[i][j] != board[i][j+1] and board[i][j+1] == '_':
                 board[i][j+1] = board[i][j]
                 board[i][j] = '_'
             
-    printBoard(board)
+    populate(board,False)
     # After every move 
     #   - fill random cell with a 2 or a 4
 
     # WIN
     # - all elements must add upto 2048
 
-    # GAME OVER
-    # - no empty spaces left to fill with a 2 or a 4
+# GAME OVER
+# - no empty spaces left to fill with a 2 or a 4
+def gameOver():
+    #return false for now
+    return False
+
+
 def main():
     board = []
     start = True #Is it the start of the game? 
@@ -138,5 +198,11 @@ def main():
     printBoard(board)
     populate(board, start)
     start = False 
-    userMove(board)
+    userInput = userMove(board)
+    while(userInput != 'q' and userInput != 'Q' and gameOver() != True):
+        userInput = userMove(board)
+        #check gameover or win        
+    
+
+
 main()
