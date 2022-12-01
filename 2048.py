@@ -90,8 +90,10 @@ def moveLeft(board):
                     board[i][j] = '_'
                     print(i,j ,"is empty now")
                     ###Adding the next statement is emptying the pos insted of adding
-                    #board[i][j-1] = '_'
-                    #print(i,j-1, "Next is empty ")
+                    #make sure prev isn't far left
+                    if(j-1 != 0):
+                        board[i][j-1] = '_'
+                        print(i,j-1, "Next is empty ")
     
             #if the current isn't empty and not equal to next and next is empty
             elif board[i][j] != '_' and board[i][j] != board[i][j-1] and board[i][j-1] == '_':
