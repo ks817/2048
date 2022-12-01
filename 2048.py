@@ -76,6 +76,32 @@ def moveDown(board):
 
 def moveLeft(board):
     print("Move Left was called")
+    for i in range(LEN):
+        #Goal : [_ _ 2 _] to move 2 to the left
+        for j in range(LEN-1,0,-1):
+            #print(i,j)
+            #get board[i] and scan for anything that isnt _
+            #if curr isn't empty and prev isn't empty
+            if board[i][j] != '_' and board[i][j-1] != '_':
+                #if curr and prev are equal the far left contains the sum
+                if board[i][j] == board[i][j-1]:
+                    board[i][0] = str(int(board[i][j])+ int(board[i][j-1]))
+                    print("Board[i][0]", i, 0," is updated to: ", board[i][0])
+                    board[i][j] = '_'
+                    print(i,j ,"is empty now")
+                    ###Adding the next statement is emptying the pos insted of adding
+                    #board[i][j-1] = '_'
+                    #print(i,j-1, "Next is empty ")
+    
+            #if the current isn't empty and not equal to next and next is empty
+            elif board[i][j] != '_' and board[i][j] != board[i][j-1] and board[i][j-1] == '_':
+                board[i][j-1] = board[i][j]
+                board[i][j] = '_'
+                print("Board[i][j-1]", i,j-1, " is updated to: ", board[i][j-1])
+                #printBoard(board)
+            
+    printBoard(board)
+
 
 def moveRight(board):
     print("Move right was called")
