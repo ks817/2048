@@ -90,93 +90,129 @@ def userMove(board):
                 board[i][j] *= 2 
                 board[i][j+1] = 0
      """
+    
+    
     # Moves
     #   - up, down, right and left
     #   - all elements in the board will move to the furthest direction
+# Moves elements all the upwards while adding similar ones
 def moveUp(board):
-    print("Move up was called")
-    for i in range(LEN-1,0,-1):
-        #Goal : Move element all the way up in it's column
-        for j in range(LEN):
-            #get board[i] and scan for anything that isnt _
-            #if curr isn't empty and prev isn't empty
-            if board[i][j] != '_' and board[i-1][j] != '_':
-                #if curr and prev are equal the far left contains the sum
-                if board[i][j] == board[i-1][j]:
-                    board[i-1][j] = str(int(board[i][j])+ int(board[i-1][j]))
-                    board[i][j] = board[i+1][j]
+    added = [] #To keep track of whether the elements were already added to avoid adding twice
     
-            #if the current isn't empty and not equal to next and next is empty
-            elif board[i][j] != '_' and board[i][j] != board[i-1][j] and board[i-1][j] == '_':
-                board[i-1][j] = board[i][j]
-                board[i][j] = '_'
+    for i in range(LEN-1,0,-1):        
+        for j in range(LEN):
+
+            #Move all the elements to the Up until next remains empty
+            if board[i][j] != 0 and board[i-1][j] == 0:
+                board[i-1][j] = board[i][j] #moves element Up
+                board[i][j] = 0
+
+            #Current isn't empty; current == next and both are not in recently added
+            elif board[i][j] != 0 and board[i][j] == board[i-1][j] and (i, j) not in added and (i-1,j) not in added:
+                #Double the value of the element and empty current
+                board[i-1][j] *= 2
+                board[i][j] = 0
+    
+                added.append((i, j))
+                added.append((i-1, j))
+
     populate(board,False)
 
+# Moves elements to the furthest down while adding similar elements once
 def moveDown(board):
-    print("Move down was called")
-    #Start from 0,0 and move down each row
+    
+    added = [] 
+    
     for i in range(LEN-1):
-        #Goal : Move element all the way down in it's column
         for j in range(LEN):
-            #get board[i] and scan for anything that isnt _
-            #if curr isn't empty and next isn't empty
-            if board[i][j] != 0 and board[i][j] == board[i+1][j]:
-                #if curr and next are equal the far down contains the sum
-                board[i][j] = board[i][j] + board[i+1][j]
+
+            #Move all the elements downward
+            if board[i][j] != 0 and board[i+1][j] == 0:
+                board[i+1][j] = board[i][j] #moves element right
+                board[i][j] = 0 #empties prev
+
+            #Current isn't empty; current == next and both are not in recently added
+            elif board[i][j] != 0 and board[i][j] == board[i+1][j] and (i, j) not in added and (i+1,j) not in added:
+                # Double the value of the element
+                board[i][j] *= 2
                 board[i+1][j] = board[i][j]
                 board[i][j] = 0
 
-            #if the current isn't empty and not equal to next and next is empty
-            elif board[i][j] != 0 and board[i][j] != board[i+1][j] and board[i+1][j] == 0:
-                board[i+1][j] = board[i][j]
+                #WORKEDDD to skip a 0 in the middle
+                if i != 0 and board[i-1][j]!=0:
+                    board[i][j] = board[i-1][j]
+                    board[i-1][j] = 0
+
+                added.append((i, j))
+                added.append((i+1, j))
+            
+
+
+    populate(board,False)
+
+
+
+# Moves elements to the furthest left while adding similar elements once
+def moveLeft(board):
+    for i in range(LEN):
+        
+        added = [] #To keep track of whether the elements were already added to avoid adding twice
+        
+        for j in range(LEN-1,0,-1):
+            
+            #Move all the elements to the left
+            if board[i][j] != 0 and board[i][j-1] == 0:
+                board[i][j-1] = board[i][j] #moves element left
                 board[i][j] = 0
             
-    populate(board,False)
-
-def moveLeft(board):
-    print("Move Left was called")
-    #Start from 0,3 and keep moving to the left col
-    #Goal : [_ _ 2 _] to move 2 to the left
-    for i in range(LEN):
-        for j in range(LEN-1,0,-1):
-
-            #get board[i] and scan for anything that isnt 0
-            #if curr isn't empty and prev isn't empty
-            if board[i][j] != 0 and board[i][j-1] == board[i][j]:
-                    #Add current starting (0,3) and Left of index (0,2)
-                    board[i][j] = board[i][j]+ board[i][j-1] #current has sum
-                    board[i][j-1] = board[i][j] #Left has sum
-                    board[i][j] = 0 #Make far right 0       
-
-            #Move all the elements to the left
-            #if the current isn't empty and not equal to left and left is empty
-            elif board[i][j] != 0 and board[i][j] != board[i][j-1] and board[i][j-1] == 0:
+            #Current isn't empty; current == prev and both are not in recently added
+            elif board[i][j] != 0 and board[i][j] == board[i][j-1] and (i, j) not in added and (i,j-1) not in added:
+                #Double the value of the element and empty current
+                board[i][j] *= 2
                 board[i][j-1] = board[i][j]
                 board[i][j] = 0
-            
+                #WORKEDDD to skip a 0 in the middle
+                if j != 3 and board[i][j+1]!=0:
+                    board[i][j] = board[i][j+1]
+                    board[i][j+1] = 0
+
+                added.append((i, j))
+                added.append((i, j-1))
+    
     populate(board,False)
 
 
+# Moves elements to the furthest right while adding similar elements once
 def moveRight(board):
-    print("Move right was called")
     for i in range(LEN):
-        #Goal : [_ 2 _ _] to move 2 to the right
+        
+        added = [] #To keep track of whether the elements were already added to avoid adding twice
+        
         for j in range(LEN-1):
-            #if two elements are equal add next (0,1) and current (0,0)
-            if board[i][j] != 0 and board[i][j+1] == board[i][j]:
-                board[i][j+1] = board[i][j] + board[i][j+1]
-                #board[i][j] = 0
-                #break
-                board[i][j] = board[i][j+1]
-                board[i][j] = 0
-                break
+
             #Move all the elements to the right
-            #if the current isn't empty and not equal to next and next is empty
-            elif board[i][j] != 0 and board[i][j] != board[i][j+1] and board[i][j+1] == 0:
-                board[i][j+1] = board[i][j] #moves element right
+            while board[i][j] != 0 and board[i][j + 1] == 0:
+                board[i][j + 1] = board[i][j] #moves element right
                 board[i][j] = 0 #empties prev
-                
+
+            #Current isn't empty; current == next and both are not in recently added
+            if board[i][j] != 0 and board[i][j] == board[i][j + 1] and (i, j) not in added and (i,j+1) not in added:
+                # Double the value of the element
+                board[i][j] *= 2
+                board[i][j+1] = board[i][j]
+                board[i][j] = 0 #empty current
+                #WORKEDDD to skip a 0 in the middle
+                if j != 0 and board[i][j-1]!=0:
+                    board[i][j] = board[i][j-1]
+                    board[i][j-1] = 0
+
+
+                added.append((i, j))
+                added.append((i, j+1))
+
     populate(board,False)
+
+
     # After every move 
     #   - fill random cell with a 2 or a 4
 
